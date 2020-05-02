@@ -1,0 +1,187 @@
+
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- font cdn -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <!-- animation cdn -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- custom css -->
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <title>MY Information</title>
+  </head>
+  <body>
+    
+
+    <!--================== Information section // start ==============-->
+    <section id="information">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="information">
+              <div class="logo" data-aos="zoom-up" data-aos-delay="100" data-aos-duration="1500">
+                <img src="img/mt-informatica-tela-sorteio-1.png" alt="logo">
+              </div>
+                <h1 data-aos="fade-up" data-aos-delay="200" data-aos-duration="1500">Parabéns por utilizar os nossos serviços.</h1>
+                <h2 data-aos="fade-up" data-aos-delay="300" data-aos-duration="1500">Como forma de agradecimento, <span> você pode ganhar um brinde da MT Informática. </span></h2>
+                <p data-aos="fade-up" data-aos-delay="500" data-aos-duration="1500">Veja como é fácil. Basta preencher o seu número de WhatsApp e ficar na torcida para ser o ganhador.</p> 
+              <form action="" data-aos="fade-up" data-aos-delay="400" data-aos-duration="1500">
+                <div class="field-detail">
+                  <input type="text" placeholder="Name" id="name" required="">
+                  <input type="text" placeholder="WhatsApp" id="whatsApp" required="">
+                  
+                  
+                </div>
+                <button type="button" class="btn-type1" id="salvar">Salvar</button>
+                <button type="button" class="btn-type1" id="export">Exportação</button>
+              </form>
+              <img src="img/icon.png" alt="icon" class="iconimg" data-aos="fade-up" data-aos-delay="600" data-aos-duration="1500">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!--================== Information section // end ==============-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+       AOS.init();
+
+     
+      $(document).ready(function() {
+          var data=[]
+          if($(window).innerWidth() <= 751) {
+              $('img').removeAttr("data-aos");
+          }
+          $("#salvar").click(function(){
+              var name = $("#name").val() 
+              var whatsApp = $("#whatsApp").val()
+            if (localStorage.data) {
+            
+              data=JSON.parse(localStorage.data)
+             
+              } 
+           
+              data.push({name:name,whatsApp:whatsApp})
+         
+              localStorage.data =  JSON.stringify(data);
+
+             
+
+         
+          })
+
+          $("#export").click(function(){
+             JSONToCSVConvertor( localStorage.data,"Report",true)
+          })
+
+          function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
+              //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
+              var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+              
+              var CSV = '';    
+              //Set Report title in first row or line
+              
+              CSV += ReportTitle + '\r\n\n';
+
+              //This condition will generate the Label/Header
+              if (ShowLabel) {
+                  var row = "";
+                  
+                  //This loop will extract the label from 1st index of on array
+                  for (var index in arrData[0]) {
+                      
+                      //Now convert each value to string and comma-seprated
+                      row += index + ',';
+                  }
+
+                  row = row.slice(0, -1);
+                  
+                  //append Label row with line break
+                  CSV += row + '\r\n';
+              }
+              
+              //1st loop is to extract each row
+              for (var i = 0; i < arrData.length; i++) {
+                  var row = "";
+                  
+                  //2nd loop will extract each column and convert it in string comma-seprated
+                  for (var index in arrData[i]) {
+                      row += '"' + arrData[i][index] + '",';
+                  }
+
+                  row.slice(0, row.length - 1);
+                  
+                  //add a line break after each row
+                  CSV += row + '\r\n';
+              }
+
+              if (CSV == '') {        
+                  alert("Invalid data");
+                  return;
+              }   
+              
+              //Generate a file name
+              var fileName = "MyReport_";
+              //this will remove the blank-spaces from the title and replace it with an underscore
+              fileName += ReportTitle.replace(/ /g,"_");   
+              
+              //Initialize file format you want csv or xls
+              var uri = 'data:text/csv;charset=utf-8,' + escape(CSV);
+              
+              // Now the little tricky part.
+              // you can use either>> window.open(uri);
+              // but this will not work in some browsers
+              // or you will not get the correct file extension    
+              
+              //this trick will generate a temp <a /> tag
+              var link = document.createElement("a");    
+              link.href = uri;
+              
+              //set the visibility hidden so it will not effect on your web-layout
+              link.style = "visibility:hidden";
+              link.download = fileName + ".xlsx";
+              
+              //this part will append the anchor tag and remove it after automatic click
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+          }
+
+
+        });
+      
+    </script>
+      <!-- You can also require other files to run in this process -->
+       <!-- You can also require other files to run in this process -->
+    <script src="./renderer.js"></script>
+  </body>
+</html>
